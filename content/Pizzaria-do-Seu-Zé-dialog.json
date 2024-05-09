@@ -1,0 +1,260 @@
+{
+  "intents": [
+    {
+      "intent": "fazer-pedido",
+      "examples": [
+        {
+          "text": "Desce uma pizza pra mim"
+        },
+        {
+          "text": "Eu quero fazer um pedido"
+        },
+        {
+          "text": "Manda uma de @sabor"
+        },
+        {
+          "text": "Me vê uma pizza"
+        },
+        {
+          "text": "To com fome"
+        }
+      ],
+      "description": ""
+    }
+  ],
+  "entities": [
+    {
+      "entity": "cep",
+      "values": [
+        {
+          "type": "patterns",
+          "value": "cep",
+          "patterns": [
+            "\\d{5}-\\d{3}",
+            "\\d{8}"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "sabor",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "calabresa",
+          "synonyms": [
+            "calabreza",
+            "linguiça"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "mussarela",
+          "synonyms": [
+            "mozzarella",
+            "muçarela",
+            "queijo"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "portuguesa",
+          "synonyms": [
+            "lusa",
+            "portuga"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    }
+  ],
+  "metadata": {
+    "api_version": {
+      "major_version": "v2",
+      "minor_version": "2018-11-08"
+    }
+  },
+  "dialog_nodes": [
+    {
+      "type": "standard",
+      "title": "Bem-vindo",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Olá. Como posso te ajudar?"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "welcome",
+      "dialog_node": "Bem-vindo"
+    },
+    {
+      "type": "standard",
+      "title": "Em outros casos",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Eu não entendi. Você pode tentar reformular a frase."
+              },
+              {
+                "text": "Você pode reformular sua afirmação? Eu não estou entendendo."
+              },
+              {
+                "text": "Eu não entendi o sentido."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "anything_else",
+      "dialog_node": "Em outros casos",
+      "previous_sibling": "node_7_1715213686669",
+      "disambiguation_opt_out": true
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Qual é o sabor da pizza?"
+              }
+            ],
+            "response_type": "text"
+          }
+        ]
+      },
+      "parent": "slot_4_1715213842639",
+      "event_name": "focus",
+      "dialog_node": "handler_4_1715213842652",
+      "previous_sibling": "handler_5_1715213842652"
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "slot_4_1715213842639",
+      "context": {
+        "sabor": "@sabor"
+      },
+      "conditions": "@sabor",
+      "event_name": "input",
+      "dialog_node": "handler_5_1715213842652"
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Qual é o CEP de entrega?"
+              }
+            ],
+            "response_type": "text"
+          }
+        ]
+      },
+      "parent": "slot_2_1715213856360",
+      "event_name": "focus",
+      "dialog_node": "handler_5_1715213856361",
+      "previous_sibling": "handler_7_1715213856361"
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "slot_2_1715213856360",
+      "context": {
+        "cep": "@cep.literal"
+      },
+      "conditions": "@cep",
+      "event_name": "input",
+      "dialog_node": "handler_7_1715213856361"
+    },
+    {
+      "type": "standard",
+      "title": "Limpar variáveis",
+      "output": {
+        "generic": []
+      },
+      "parent": "node_7_1715213686669",
+      "context": {
+        "cep": null,
+        "sabor": null
+      },
+      "conditions": "false",
+      "dialog_node": "node_4_1715214289684"
+    },
+    {
+      "type": "frame",
+      "title": "Anotar o pedido do cliente",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Ok! Pedido anotado! Uma pizza de $sabor para o CEP $cep."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "next_step": {
+        "behavior": "jump_to",
+        "selector": "body",
+        "dialog_node": "node_4_1715214289684"
+      },
+      "conditions": "#fazer-pedido",
+      "dialog_node": "node_7_1715213686669",
+      "previous_sibling": "Bem-vindo"
+    },
+    {
+      "type": "slot",
+      "output": {},
+      "parent": "node_7_1715213686669",
+      "variable": "$cep",
+      "dialog_node": "slot_2_1715213856360",
+      "previous_sibling": "slot_4_1715213842639"
+    },
+    {
+      "type": "slot",
+      "parent": "node_7_1715213686669",
+      "variable": "$sabor",
+      "dialog_node": "slot_4_1715213842639",
+      "previous_sibling": "node_4_1715214289684"
+    }
+  ],
+  "counterexamples": [],
+  "system_settings": {
+    "disambiguation": {
+      "prompt": "Você quis dizer:",
+      "enabled": true,
+      "randomize": true,
+      "max_suggestions": 5,
+      "suggestion_text_policy": "title",
+      "none_of_the_above_prompt": "Nenhuma das anteriores",
+      "use_connect_to_support_prompt": "Connect to support",
+      "single_answer_clarification_prompt": "Something else"
+    },
+    "human_agent_assist": {
+      "prompt": "Você quis dizer:"
+    }
+  },
+  "learning_opt_out": false,
+  "language": "pt-br",
+  "description": "",
+  "name": "Pizzaria do Seu Zé-dialog"
+}
