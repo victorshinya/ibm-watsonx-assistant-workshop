@@ -1,0 +1,17 @@
+{
+  "name": "node-assistant",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Victor Shinya <contato@victorshinya.com.br>",
+  "license": "Apache-2.0",
+  "description": "A sample Node.js app to expose an API to interact with your IBM watsonx Assistant",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "ibm-watson": "^9.0.1"
+  }
+}
