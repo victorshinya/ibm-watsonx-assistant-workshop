@@ -517,7 +517,7 @@ Seu chatbot utiliza de uma inteligência artificial generativa (IA Generativa, o
 ![Teste completo da nova ação com a integração com o watsonx.ai](static/ibm-watsonx-assistant-workshop_genai_integration30.png)
 
 ## License
-Copyright 2024 Victor Shinya
+Copyright 2025 Victor Shinya
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
