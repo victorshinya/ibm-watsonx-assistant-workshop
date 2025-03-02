@@ -7,6 +7,7 @@ IBM watsonx Assistant é uma plataforma de inteligência artificial conversacion
 - [Criação de uma conta](#criar-uma-conta-gratuita-na-ibm-cloud---parceria-acadêmica-ibm--universidades)
 - [Experiência clássica no IBM Watson Assistant](#experiência-clássica-no-ibm-watson-assistant)
 - [Experiência nova no IBM watsonx Assistant](#experiência-nova-no-ibm-watsonx-assistant)
+- [Integração com IA Generativa no watsonx Assistant](#integração-com-ia-generativa-no-watsonx-assistant)
 
 ## Criar uma conta gratuita na IBM Cloud - parceria acadêmica IBM & Universidades
 
@@ -313,6 +314,207 @@ Na página, você pode realizar o mesmo teste de conversa com o seu assistente e
 ![Teste de conversação com o assistente dentro da página de Preview](static/ibm-watsonx-assistant-workshop14.png)
 
 Por mais simples que seja, você consegue explorar ainda mais funcionalidades e expandir a base de conhecimento para atender outros produtos e serviços dentro da indústria alimentícia. Ou mudar para outra indústria e construir um assistente capaz de atuar dentro de um negócio. As opções são infinitas.
+
+## Integração com IA Generativa no watsonx Assistant
+
+O IBM watsonx Assistant, em sua nova experiência, permite integrar com os modelos de inteligência artificial generativa nativamente. Você vai descobrir como integrar, a partir do chatbot criado anteriormente.
+
+Acesse o catálogo na [IBM Cloud](https://cloud.ibm.com/catalog) e pesquise por “watsonx”. A plataforma apresentará uma lista de serviços de inteligência artificial. Você deve clicar no “watsonx.ai Studio”. O serviço possui uma plataforma centralizada para treinamento e inferência de modelos de inteligência artificial. É por meio o serviço de watsonx.ai Studio permite acessar os grandes modelos de linguagem (LLM) e modelos de fundação (FM) através de APIs.
+
+Clique no retângulo do “watsonx.ai Studio”.
+
+![Catálogo da IBM Cloud com os serviços do watsonx](static/ibm-watsonx-assistant-workshop_genai_integration00.png)
+
+Na página de criação da instância do serviço, clique na caixa para concordar com o acordo de licença e, logo abaixo, clique no botão azul “Create”. Importante é a criação do serviço ser na mesma região do watsonx Assistant, para facilitar a comunicação entre serviços.
+
+![Criação da instância do serviço watsonx.ai Studio](static/ibm-watsonx-assistant-workshop_genai_integration01.png)
+
+Ao lado do botão azul “Launch in”, clique na seta para baixo para abrir um menu. Clique no item “IBM watsonx” para abrir a plataforma correta. A IBM Cloud está migrando seu antigo serviço IBM Cloud Pak for Data para o IBM watsonx.ai.
+
+![Página inicial do serviço do watsonx.ai Studio](static/ibm-watsonx-assistant-workshop_genai_integration02.png)
+
+Na primeira visita a plataforma, a IBM dá as boas vindas. Clique no “x” no canto superior direito para pular o tour de boas vindas.
+
+Na página inicial, desça até o final da tela até localizar a sessão de Projetos no watsonx.ai. No canto superior direito da caixa de projetos, clique no ícone de “+” para criar um novo projeto. O projeto é importante para utilizar o Project ID para integrar o watsonx.ai com o watsonx Assistant através da API.
+
+![Local para criar projeto no watsonx.ai Studio](static/ibm-watsonx-assistant-workshop_genai_integration03.png)
+
+Defina o nome do projeto no watsonx.ai. Preencha com o nome “watsonx-openapi”. Depois clique no botão com texto em azul “Add”. Você criará uma instância do IBM Cloud Object Storage, armazenamento de objetos da IBM Cloud. O serviço é necessário para criar o projeto, porém não será utilizado nesta ocasião.
+
+![Definição das configurações iniciais do projeto](static/ibm-watsonx-assistant-workshop_genai_integration04.png)
+
+Na página de criação da instância, selecione a opção “Lite(deprecated)” e depois clique no botão azul “Create”. Apesar de estar de saída, o plano é necessário para permitir a criação da instância sem gerar custos, enquanto estiver abaixo do limite pré-determinado pela IBM Cloud.
+
+![Criação da instância de IBM Cloud Object Storage](static/ibm-watsonx-assistant-workshop_genai_integration05.png)
+
+Assim que a plataforma criar a instância, você será redirecionado de volta para a página de configuração do projeto no watsonx.ai Studio. Clique no botão com texto em azul “Refresh”. A IBM Cloud atualizará a lista e pré-selecionará a instância recém-criada. Clique no botão azul “Create” no canto inferior direito.
+
+Após a criação do projeto, você deve clicar na aba “Manage”. Salve o “Project ID” em um bloco de notas ou em um local de fácil acesso. Você usará na configuração no watsonx Assistant.
+
+![Gerenciado do projeto com as informações gerais](static/ibm-watsonx-assistant-workshop_genai_integration06.png)
+
+No menu lateral, clique no item “Services & Integration”. Depois clique no botão azul “Associate service”. Esta etapa é necessária para integrar com o serviço watsonx.ai Runtime. O serviço integra com os grandes modelos de linguagem através de APIs.
+
+![Acesso ao “Services & Integrations” para integração com watsonx.ai Runtime](static/ibm-watsonx-assistant-workshop_genai_integration007.png)
+
+Clique no botão “New service +” e depois clique no retângulo de “watsonx.ai Runtime” para ser redirecionado na página de criação da instância do serviço.
+
+![Criar e associar um novo serviço de watsonx.ai Runtime](static/ibm-watsonx-assistant-workshop_genai_integration08.png)
+
+Clique no botão azul “Create” com as configurações padrões. Importante notar se o serviço criado está na mesma região que o watsonx.ai Studio e o watsonx Assistant.
+
+![Criação da instância do watsonx.ai Runtime](static/ibm-watsonx-assistant-workshop_genai_integration09.png)
+
+Após a criação da instância de watsonx.ai Runtime, você precisa associa-lo com o watsonx.ai Studio para utilizar a integração via API com os grandes modelos de linguagem (LLM). Selecione o serviço “watsonx.ai Runtime-xx” e clique no botão azul “Associate” no canto inferior direito.
+
+![Associar o watsonx.ai Runtime com o watsonx.ai Studio](static/ibm-watsonx-assistant-workshop_genai_integration10.png)
+
+Retorne para a plataforma da IBM Cloud. No menu superior da tela, clique no menu “Manage” e depois clique no item “Access (IAM)”. Na pagina de IAM (gerenciamento de acesso e identidade), a IBM dispõe de dados e informações de acesso a conta e serviços da IBM Cloud. 
+
+![Local para criar API Key na IBM Cloud](static/ibm-watsonx-assistant-workshop_genai_integration11.png)
+
+Clique no item “API keys” no menu laterial esquerdo da tela. Depois clique no botão azul “Create +” para criar nova API Key para sua conta na IBM Cloud. A API Key serve para permitir o acesso a todos ou determinados serviços programaticamente (via código ou chamada direta de API). No watsonx Assistant, a IBM permite o acesso direto via API e o uso de uma API Key é necessária.
+
+No pop-up aberto, preencha com o nome “watsonx-apikey” e clique no botão azul “Create”. Além do nome não há necessidade de mudar uma configuração desta página. A plataforma vai mostrar um API Key. Clique em “Copy” ou manualmente copie o API Key. Salve a chave pois será necessário para configurar a integração entre watsonx.ai Studio com o watsonx Assistant.
+
+![Criação de nova API Key para conectar com serviços programaticamente](static/ibm-watsonx-assistant-workshop_genai_integration12.png)
+
+A plataforma e serviço do watsonx.ai disponibiliza uma API para interagir com grandes modelos de linguagem (LLM). Na página do [Github do watsonx Language Model Starter Kit](https://github.com/watson-developer-cloud/assistant-toolkit/tree/master/integrations/extensions/starter-kits/language-model-watsonx), a IBM oferece o arquivo na especificação em OpenAPI. Acesse o repositório no Github e baixe o arquivo “watsonx-openapi.json”. Você usará na configuração da integração no watsonx Assistant.
+
+O OpenAPI é uma linguagem de especificação para APIs HTTP que define estrutura e sintaxe de uma forma que não esteja vinculada à linguagem de programação na qual a API foi criada. Independente da linguagem de programação usada na construção da API, qualquer linguagem de programação consegue entender os parâmetros necessários para realizar a integração com a API descrita na especificação. No watsonx Language Model Starter Kit, a IBM fornece o arquivo de especificação em OpenAI para permitir que o watsonx Assistant realize a chamada de API para o watsonx.ai e para o grande modelo de linguagem (LLM) definida na configuração da ação.
+
+Acesse novamente a sua instância de watsonx Assistant, na nova experiência. No menu lateral esquerdo, clique no item “Integrations”, localizado no canto inferior. 
+
+![Localização da opção de “Integrations” no watsonx Assistant](static/ibm-watsonx-assistant-workshop_genai_integration13.png)
+
+A nova experiência do watsonx Assistant possui as mesmas integrações do que a experiência clássica. Na nova experiência, a IBM trouxe a opção de criar e adicionar integrações customizadas, também conhecidas como extensões customizadas. Na plataforma, a IBM disponibiliza integrações com serviços da IBM e de terceiros (third-party), como IBM App Connect, IBM Robot Process Automation (RPA), IBM Watson Discovery, Google Programmable Search Engine, Hubspot, e muitos outros. A integração com o watsonx.ai é feita através de uma extensão customizada.
+
+Na área de Extensões, clique no botão azul “Build custom extension” localizado no lado esquerdo da tela. Assim, você criará uma extensão customizada com a especificação OpenAPI para integrar com o watsonx.ai.
+
+![Local para construir extensões customizadas](static/ibm-watsonx-assistant-workshop_genai_integration14.png)
+
+Na página de início, preencha o campo de nome com “watsonx” e clique no botão azul “Next” no canto superior direito.
+
+Na página de informações da extensão customizada, importe o arquivo “watsonx-openai.json”. Caso não tenha baixado, acesse o repositório no [Github da IBM Watson](https://github.com/watson-developer-cloud/assistant-toolkit/blob/master/integrations/extensions/starter-kits/language-model-watsonx/watsonx-openapi.json) e importe dentro da plataforma. Depois de importar o arquivo, clique no botão azul “Next” no canto superior direito.
+
+Na página de revisão final, clique no botão azul “Finish” no canto superior para finalizar a criação da extensão customizada do watsonx.ai. 
+
+![Importar arquivo “watsonx-openapi.json” no watsonx Assistant](static/ibm-watsonx-assistant-workshop_genai_integration15.png)
+
+De volta a lista de integrações e extensões, uma nova extensão aparecerá na lista, ao lado da extensão de “Search” e “Segment”. Com a extensão recém-criada, clique no botão “Add +” para adicionar as configurações e autorizar a integração dentro do watsonx Assistant.
+
+A plataforma abrirá um pop-up solicitando confirmação para adicionar. Clique no botão azul “Add”. Você será redirecionado para a página de configuração da extensão do watsonx.ai.
+
+![Adicionar as configurações do watsonx.ai na extensão](static/ibm-watsonx-assistant-workshop_genai_integration16.png)
+
+Na página de inicial de configuração, clique botão azul “Next”.
+
+Na página de configuração, no campo tipo de autenticação, selecione “OAuth 2.0”. No campo Apikey, cole a API Key gerado na área de IAM na IBM Cloud. No campo autenticação do cliente, mude a opção selecionada para “Send as Body”. Essas configurações são necessárias para garantir o funcionamento da integração do watsonx Assistant com o watsonx.ai. Do contrário, nas interações do chatbot, ao chegar no passo com a integração com watsonx.ai, o chatbot retornará erro como “Failed to authenticate the request due to no Bearer token in the request header”. Clique no botão azul “Next” no canto superior direito.
+
+Por fim, na página de revisão das operações (das APIs), clique no botão azul “Finish” no canto superior direito para concluir a configuração da extensão.
+
+![Configuração da extensão customizada do watsonx.ai](static/ibm-watsonx-assistant-workshop_genai_integration17.png)
+
+Uma vez que a configuração da extensão customizada com o watsonx.ai está concluída, chegou a hora de usar a extensão com o seu assistente no watsonx Assistant.
+
+Clique no item “Actions” menu lateral esquerdo. Você acessará a lista de ações criadas dentro do seu assistente. Caso utilize o mesmo assistente, criado anteriormente, você verá apenas uma única ação criada, “Quero pedir uma pizza”.
+
+Para a integração com o watsonx.ai e com um grande modelo de linguagem (LLM), você utilizará de uma nova ação no seu assistente. O caso de uso é para recomendar sabores de pizza com base no seu gosto. Quem recomendará os sabores será uma inteligência artificial generativa.
+
+Clique no botão azul “New action” no canto superior direito da tela.
+
+![Criação de uma nova ação no watsonx Assistant](static/ibm-watsonx-assistant-workshop_genai_integration18.png)
+
+Crie uma nova ação e preencha o campo inicial com a frase “Quais sabores vocês recomendam?”.  Neste momento, você não precisa adicionar mais frases de exemplo. Porém, caso tenha interesse em melhorar, você pode inserir mais frases de exemplo para melhorar o modelo do processamento de linguagem natural (NLP) desta ação.
+
+Clique no botão azul “Save” para criar a ação e iniciar a configuração das etapas de conversação.
+
+![Nova ação para recomendar sabores usando IA Generativa](static/ibm-watsonx-assistant-workshop_genai_integration19.png)
+
+Na primeira etapa da ação, preencha o campo “Assistant says” com a frase “Me conta quais sabores você gosta ou costuma pedir?”. Clique no botão “Define customer response” e clique no item “Free text”.
+
+Ao entrar na conversa, o chatbot vai perguntar sobre os sabores que o usuário gosta e, com a resposta informada pelo usuário, o chatbot vai armazenar a resposta para utilizar nas próximas etapas da conversa.
+
+![Configuração da primeira etapa da conversação da nova ação](static/ibm-watsonx-assistant-workshop_genai_integration20.png)
+
+Na segunda etapa da conversação, mude no menu ao lado do “Is taken” de “without conditions” para “with conditions”. Ao alterar, a plataforma vai apresentar uma área para gerenciar as condições para o usuário entrar nesta etapa. Como o campo é automaticamente preenchido com a validação da variável do passo anterior, não há necessidade de alteração. Este passo é uma segurança para que o chatbot atue daqui em diante caso o usuário forneça um dado válido.
+
+Clique no botão azul “Set Variable values” para criar uma variável da sessão, no qual será usada para construir o System Prompt enviado para a inteligência artificial generativa. Na área de valores de variáveis, clique no botão “Set new value”. A plataforma abrirá um menu. Clique em “+ New session variable”.
+
+![Configuração da extensão customizada do watsonx.ai](static/ibm-watsonx-assistant-workshop_genai_integration21.png)
+
+A plataforma vai abrir um formulário para preencher. Preencha o primeiro campo, de nome, com a palavra “prompt”. O watsonx Assistant vai preencher automaticamente o campo “Variable ID” com o mesmo nome do campo preenchido. No campo tipo, selecione a opção “Free text”. Por fim, clique no botão azul “Apply” para finalizar a criação e salvar a nova variável de sessão.
+
+![Configuração de nova variável de sessão](static/ibm-watsonx-assistant-workshop_genai_integration22.png)
+
+A nova variável aparecerá com dois campos, um preenchido e outro não. O campo preenchido está com o nome da variável “prompt”. O segundo campo não estará preenchido, contudo, a plataforma abre um menu com opções para selecionar e preencher. Clique na opção “Expression” e cole o seguinte texto:
+
+> Você é um garçom de uma pizzaria. O seu trabalho é recomendar nomes de pizzas com base nos ingredientes que o cliente informar. Você vai recomendar 3 pizzas com os seguintes ingredientes:" + <SABORES_ACTION_STEP_VAR> + ". Você NÃO DEVE responder qualquer outra informação ou curiosidade. Você SÓ DEVE responder os nomes das pizzas. Sem preço e sem descrição dos ingredientes em cada pizza. NÃO inclua notas na resposta.
+
+Substitua o texto “<SABORES_ACTION_STEP_VAR>” pela variável da etapa da ação. Selecione o texto “<SABORES_ACTION_STEP_VAR>” e inicie a digitação com a tecla “$”. Automaticamente, a plataforma vai substituir o texto e apresentará um menu com opções de variáveis. Clique na opção “Action step variables” e selecione a opção “1. Me conta quais sabores você gosta”. Após concluir, clique no botão azul “Apply” para salvar a configuração da nova variável.
+
+![Variável de sessão com o System Prompt do grande modelo de linguagem](static/ibm-watsonx-assistant-workshop_genai_integration23.png)
+
+Logo abaixo do campo para preencher uma resposta do chatbot – que deverá permanecer vazia nesta etapa -, clique no menu “Continue to next step” e selecione a opção “Use na extension”. Ao invés de avançar para a próxima etapa da conversação, o chatbot vai utilizar uma extensão antes de avançar.
+
+![Opções para continuar com a próxima etapa](static/ibm-watsonx-assistant-workshop_genai_integration24.png)
+
+A plataforma abrirá um formulário para configurar a integração com a extensão do IBM watsonx Assistant. No campo extensão, selecione “watsonx”. No campo operação, selecione “Generation”. No campo parâmetros, selecione as seguintes opções:
+
+- Campo “version”: no menu selecione “Enter text” e preencha o campo com “2023-05-29”.
+- Campo “input”: no menu selecione “Session variables” e depois selecione a opção “prompt”.
+- Campo “model_id”: no menu selecione “Enter text” e preencha o campo com “ibm/granite-3-8b-instruct”.
+- Campo “project_id”: no menu selecione “Enter text” e preencha o campo com o “Project ID” salvo da página do projeto no watsonx.ai Studio.
+
+Além do modelo IBM Granite “ibm/granite-3-8b-instruct”, você pode alterar para outros modelos disponíveis no watsonx.ai para integrar com o seu chatbot através da extensão customizada. A lista completa está disponível na [documentação do IBM watsonx](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models.html?context=wx#ibm-provided). Na tabela “IBM foundation models provided with watsonx.ai”, a coluna “API model_id” representa o identificador usado para preencher o campo “model_id”.  
+
+![Preenchimento dos parâmetros obrigatórios da extensão](static/ibm-watsonx-assistant-workshop_genai_integration25.png)
+
+Logo abaixo do campo “project_id”, existem campos importantes para preencher, porém estão ocultos, dentro do menu “Optional parameters”. Clique no menu para abrir mais parâmetros.
+
+Você preencherá 5 campos da lista, ou seja, clique somente nos campos para preencher. Os demais você pode deixar vazias. 
+
+- Campo “parameters.top_p”: no menu selecione “Enter a number” e preencha o campo com valor “0.9”.
+- Campo “parameters.temperature”: no menu selecione “Enter a number” e preencha o campo com valor “1”.
+- Campo “parameters.max_new_tokens”: no menu selecione “Enter a number” e preencha o campo com valor “200”.
+- Campo “parameters.new_tokens”: no menu selecione “Enter a number” e preencha o campo com valor “50”.
+- Campo “parameters.decoding_method”: no menu selecione “Enter text” e preencha o campo com “sample”.
+
+O campo “parameters.temperature” funciona da seguinte forma: quanto menor a temperatura, mais determinísticos os resultados são. Por debaixo da tecnologia, ter um valor alto de temperatura, significa que o próximo token mais provável é sempre escolhido. Aumentar a temperatura pode levar a mais aleatoriedade, o que incentiva respostas mais diversas ou criativas.
+
+Já o campo “parameters.top_p” é uma técnica de amostragem com temperatura, chamada amostragem de núcleo, onde você pode controlar o quão determinístico o modelo é. Se você está procurando respostas exatas e factuais, mantenha isso baixo. Se você está procurando respostas mais diversas, aumente para um valor mais alto.
+
+Por dar mais criatividade ao grande modelo de linguagem (LLM), para recomendar sabores de pizza, você definiu ambos os parâmetros com valor alto (vai de -1 até 1).
+
+Uma vez concluído o preenchimento dos campos, clique no botão azul “Apply” para concluir as configurações da sua extensão customizada, o “watsonx”. 
+
+![Preenchimento dos parâmetros opcionais da extensão](static/ibm-watsonx-assistant-workshop_genai_integration26.png)
+
+Se o seu preenchimento estiver correto, a sua configuração ficará parecido com a imagem de referência (veja figura “Resultado das configurações na extensão customizada do watsonx”).
+
+![Resultado das configurações na extensão customizada do watsonx](static/ibm-watsonx-assistant-workshop_genai_integration27.png)
+
+Clique no botão azul “New step +” no canto inferior esquerdo para criar uma nova etapa da conversação. Este será a terceira e última etapa dentro deste fluxo de conversação, para recomendar sabores de pizza com inteligência artificial generativa.
+
+Na nova etapa, clique no botão azul “Set variable values” para visualizar os campos de variáveis de sessão. Clique no botão branco com borda azul “Set new value” para adicionar ou criar uma variável. Com o menu aberto, selecione a opção “+ New session variable”. Esta nova variável de sessão será usada para salvar apenas a mensagem de retorno da integração com a extensão customizada do watsonx.ai. A resposta vem com um JSON com diversos dados. Para este chatbot, a variável servirá para armazenar apenas o texto de resposta da inteligência artificial.
+
+Com o pop-up de configuração da nova variável de sessão, preencha o campo nome com “genai_response” e no campo tipo, selecione a opção “Free text”. Depois clique no botão azul “Apply” para salvar as configurações da nova variável.
+
+![Configuração da terceira etapa da conversação com nova variável de sessão](static/ibm-watsonx-assistant-workshop_genai_integration28.png)
+
+Para preencher o campo de valor da nova variável “genai_response”, clique na opção “Expression”. No campo de expressão, inicie o preenchimento com o símbolo “$”. Automaticamente, a plataforma abrirá um novo menu com opções de variáveis. Selecione a opção “watsonx (step 2)”, depois selecione a opção “body.results”. Na sequencia, digite, sem espaço, o texto “[0].generated_text”. O seu campo deverá estar com o texto “body.results[0].generated_text” – com o texto “body.results” envolta de um círculo azul (veja figura “Configuração do valor armazenado da nova variável de sessão”).
+
+Clique no botão azul “Apply” para salvar o valor da variável de sessão “genai_response”.
+
+![Configuração do valor armazenado da nova variável de sessão](static/ibm-watsonx-assistant-workshop_genai_integration29.png)
+
+Por fim, no campo “Assistant says”, clique na opção “fx” no menu ou digite “$” no campo para abrir um menu. Selecione o item “Session variables” e depois selecione a opção “genai_response”.
+
+Agora basta realizar o teste do seu chatbot no chat de Preview. Clique no botão branco com borda azul “Preview” no canto inferior direito. No chat, envie as mensagens na ordem e separadamente: “Quais sabores vocês recomendam?“ e “presunto e queijo”. O chatbot vai demorar poucos segundos após o envio da segunda mensagem. Assim que o chatbot responder, ele retornará uma mensagem com as recomendações de sabores de pizza. As recomendações virão do modelo IBM Granite (“ibm/granite-3-8b-instruct”), um dos grandes modelos de linguagens (LLMs) disponíveis no IBM watsonx.ai e, agora, integrado no seu chatbot no watsonx Assistant.
+
+Seu chatbot utiliza de uma inteligência artificial generativa (IA Generativa, ou “GenAI”) para expandir sua base de conhecimento e para enriquecer a resposta para o seu usuário.
+
+![Teste completo da nova ação com a integração com o watsonx.ai](static/ibm-watsonx-assistant-workshop_genai_integration30.png)
 
 ## License
 Copyright 2024 Victor Shinya
