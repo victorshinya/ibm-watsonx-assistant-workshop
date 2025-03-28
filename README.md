@@ -355,7 +355,7 @@ Após a criação do projeto, você deve clicar na aba “Manage”. Salve o “
 
 No menu lateral, clique no item “Services & Integration”. Depois clique no botão azul “Associate service”. Esta etapa é necessária para integrar com o serviço watsonx.ai Runtime. O serviço integra com os grandes modelos de linguagem através de APIs.
 
-![Acesso ao “Services & Integrations” para integração com watsonx.ai Runtime](static/ibm-watsonx-assistant-workshop_genai_integration007.png)
+![Acesso ao “Services & Integrations” para integração com watsonx.ai Runtime](static/ibm-watsonx-assistant-workshop_genai_integration07.png)
 
 Clique no botão “New service +” e depois clique no retângulo de “watsonx.ai Runtime” para ser redirecionado na página de criação da instância do serviço.
 
@@ -449,7 +449,7 @@ A plataforma vai abrir um formulário para preencher. Preencha o primeiro campo,
 
 A nova variável aparecerá com dois campos, um preenchido e outro não. O campo preenchido está com o nome da variável “prompt”. O segundo campo não estará preenchido, contudo, a plataforma abre um menu com opções para selecionar e preencher. Clique na opção “Expression” e cole o seguinte texto:
 
-> Você é um garçom de uma pizzaria. O seu trabalho é recomendar nomes de pizzas com base nos ingredientes que o cliente informar. Você vai recomendar 3 pizzas com os seguintes ingredientes:" + <SABORES_ACTION_STEP_VAR> + ". Você NÃO DEVE responder qualquer outra informação ou curiosidade. Você SÓ DEVE responder os nomes das pizzas. Sem preço e sem descrição dos ingredientes em cada pizza. NÃO inclua notas na resposta.
+> "Você é um garçom de uma pizzaria. O seu trabalho é recomendar nomes de pizzas com base nos ingredientes que o cliente informar. Você vai recomendar 3 pizzas com os seguintes ingredientes:" + <SABORES_ACTION_STEP_VAR> + ". Você NÃO DEVE responder qualquer outra informação ou curiosidade. Você SÓ DEVE responder os nomes das pizzas. Sem preço e sem descrição dos ingredientes em cada pizza. NÃO inclua notas na resposta."
 
 Substitua o texto “<SABORES_ACTION_STEP_VAR>” pela variável da etapa da ação. Selecione o texto “<SABORES_ACTION_STEP_VAR>” e inicie a digitação com a tecla “$”. Automaticamente, a plataforma vai substituir o texto e apresentará um menu com opções de variáveis. Clique na opção “Action step variables” e selecione a opção “1. Me conta quais sabores você gosta”. Após concluir, clique no botão azul “Apply” para salvar a configuração da nova variável.
 
