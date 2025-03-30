@@ -1,0 +1,307 @@
+[
+    {
+        "id": "68d90b44697bd9cf",
+        "type": "telegram sender",
+        "z": "53e608a7da382795",
+        "name": "",
+        "bot": "",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 540,
+        "y": 100,
+        "wires": [
+            [
+                "0cc3863b390146ac"
+            ]
+        ]
+    },
+    {
+        "id": "0b3537a52f7269f6",
+        "type": "inject",
+        "z": "53e608a7da382795",
+        "name": "Trigger Sender",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 120,
+        "y": 100,
+        "wires": [
+            [
+                "22964a678e102a4d"
+            ]
+        ]
+    },
+    {
+        "id": "22964a678e102a4d",
+        "type": "change",
+        "z": "53e608a7da382795",
+        "name": "Message to Send",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.type",
+                "pt": "msg",
+                "to": "message",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "payload.content",
+                "pt": "msg",
+                "to": "Olá! Seja bem vindo a Pizzaria da Cantina! Como posso te ajudar?",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "payload.chatId",
+                "pt": "msg",
+                "to": "363731229",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 330,
+        "y": 100,
+        "wires": [
+            [
+                "68d90b44697bd9cf"
+            ]
+        ]
+    },
+    {
+        "id": "0cc3863b390146ac",
+        "type": "debug",
+        "z": "53e608a7da382795",
+        "name": "Debug Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "3947de8b225d371b",
+        "type": "comment",
+        "z": "53e608a7da382795",
+        "name": "Send Telegram message",
+        "info": "",
+        "x": 130,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "173003b9f28e56b2",
+        "type": "telegram receiver",
+        "z": "53e608a7da382795",
+        "name": "",
+        "bot": "",
+        "saveDataDir": "",
+        "filterCommands": false,
+        "x": 100,
+        "y": 240,
+        "wires": [
+            [
+                "5d2c27de5959de09"
+            ],
+            [
+                "5d2c27de5959de09"
+            ]
+        ]
+    },
+    {
+        "id": "66797da0a8605cee",
+        "type": "function",
+        "z": "53e608a7da382795",
+        "name": "Parse JSON do watsonx Assistant",
+        "func": "if (msg.payload) {\n    let output = msg.payload.output.generic;\n    msg.payload = { messages: [] };\n    for (var i = 0; i < output.length; i++) {\n        if (output[i].response_type === \"text\") {\n            msg.payload.messages.push({ text: output[i].text });    \n        } else if (output[i].response_type === \"image\") {\n            msg.payload.messages.push({ attachment: { type: \"image\", payload: { url: output[i].source }}})\n        } else if (output[i].response_type === \"option\") {\n            var buttons = [];\n            for (var b = 0; b < output[i].options.length; b++) {\n                buttons.push({ type: \"show_block\", block_names: [\"Options\"], title: output[i].options[b].label });\n            }\n            msg.payload.messages.push({ attachment: { type: \"template\", payload: { template_type: \"button\", text: output[i].title, buttons: buttons }}});\n        } else {\n            msg.payload.messages.push({ text: \"Erro no retorno da API\" })\n        }\n    }\n    msg.payload.type = \"message\";\n    msg.payload.content = msg.payload.messages[0].text;\n    msg.payload.chatId = msg.originalMessage.chat.id;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 240,
+        "wires": [
+            [
+                "8ea47f3a8792ffad",
+                "be174b98c3be45b6"
+            ]
+        ]
+    },
+    {
+        "id": "24a5c80c8c8c7053",
+        "type": "watson-assistant-v2",
+        "z": "53e608a7da382795",
+        "name": "watsonx",
+        "service-endpoint": "",
+        "assistant_id": "",
+        "debug": false,
+        "restart": false,
+        "return_context": true,
+        "alternate_intents": false,
+        "multisession": true,
+        "timeout": "",
+        "optout-learning": false,
+        "persist-session-id": false,
+        "x": 540,
+        "y": 240,
+        "wires": [
+            [
+                "66797da0a8605cee"
+            ]
+        ]
+    },
+    {
+        "id": "8ea47f3a8792ffad",
+        "type": "debug",
+        "z": "53e608a7da382795",
+        "name": "Debug response",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1040,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "5d2c27de5959de09",
+        "type": "change",
+        "z": "53e608a7da382795",
+        "name": "Mensagem no Payload",
+        "rules": [
+            {
+                "t": "set",
+                "p": "params.session_id",
+                "pt": "msg",
+                "to": "Victor",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.content",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 330,
+        "y": 240,
+        "wires": [
+            [
+                "24a5c80c8c8c7053",
+                "2d90631de7baeff5"
+            ]
+        ]
+    },
+    {
+        "id": "2d90631de7baeff5",
+        "type": "debug",
+        "z": "53e608a7da382795",
+        "name": "Debug input payload",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 580,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "be174b98c3be45b6",
+        "type": "telegram sender",
+        "z": "53e608a7da382795",
+        "name": "",
+        "bot": "",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1040,
+        "y": 240,
+        "wires": [
+            [
+                "3c36d31f31c7d0ba"
+            ]
+        ]
+    },
+    {
+        "id": "3c36d31f31c7d0ba",
+        "type": "debug",
+        "z": "53e608a7da382795",
+        "name": "Debug response",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "a7cd44d4881aca2c",
+        "type": "comment",
+        "z": "53e608a7da382795",
+        "name": "watsonx + Telegram bot",
+        "info": "",
+        "x": 120,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "e7f9d341f173ee61",
+        "type": "telegram bot",
+        "botname": "Pizzaria da Cantina bot",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "testenvironment": false,
+        "updatemode": "polling",
+        "pollinterval": 300,
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": 6667,
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbothost": "0.0.0.0",
+        "localbotport": 8443,
+        "publicbotport": 8443,
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    }
+]
