@@ -1,0 +1,214 @@
+[
+    {
+        "id": "9fa16afd7ff6e6e9",
+        "type": "inject",
+        "z": "49cd3ad4fb25a54b",
+        "name": "Trigger Sender",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "Olá! Seja bem vindo a Pizzaria da Cantina! Como posso te ajudar?",
+        "payloadType": "str",
+        "x": 120,
+        "y": 100,
+        "wires": [
+            [
+                "6695691139ec5dfd"
+            ]
+        ]
+    },
+    {
+        "id": "268acbce92e0e437",
+        "type": "comment",
+        "z": "49cd3ad4fb25a54b",
+        "name": "Send Discord message",
+        "info": "",
+        "x": 120,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "6695691139ec5dfd",
+        "type": "discordMessageManager",
+        "z": "49cd3ad4fb25a54b",
+        "name": "Discord sender",
+        "channel": "",
+        "token": "",
+        "x": 340,
+        "y": 100,
+        "wires": [
+            [
+                "5ad82f5b51a45ca5"
+            ]
+        ]
+    },
+    {
+        "id": "5ad82f5b51a45ca5",
+        "type": "debug",
+        "z": "49cd3ad4fb25a54b",
+        "name": "Debug Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 560,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "b279fd6b2866080b",
+        "type": "comment",
+        "z": "49cd3ad4fb25a54b",
+        "name": "watsonx + Discord bot",
+        "info": "",
+        "x": 120,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "5d8636186083d75e",
+        "type": "discordMessage",
+        "z": "49cd3ad4fb25a54b",
+        "name": "",
+        "channelIdFilter": "",
+        "token": "",
+        "x": 100,
+        "y": 240,
+        "wires": [
+            [
+                "5443f7883c0f6a5e"
+            ]
+        ]
+    },
+    {
+        "id": "a7f7a0f6f3094d9b",
+        "type": "discordMessageManager",
+        "z": "49cd3ad4fb25a54b",
+        "name": "Discord sender",
+        "channel": "",
+        "token": "",
+        "x": 1040,
+        "y": 240,
+        "wires": [
+            [
+                "82332b99c88959bb"
+            ]
+        ]
+    },
+    {
+        "id": "5443f7883c0f6a5e",
+        "type": "change",
+        "z": "49cd3ad4fb25a54b",
+        "name": "Mensagem no Payload",
+        "rules": [
+            {
+                "t": "set",
+                "p": "params.session_id",
+                "pt": "msg",
+                "to": "author.id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 330,
+        "y": 240,
+        "wires": [
+            [
+                "9f0572a03bed9aae"
+            ]
+        ]
+    },
+    {
+        "id": "9f0572a03bed9aae",
+        "type": "watson-assistant-v2",
+        "z": "49cd3ad4fb25a54b",
+        "name": "watsonx",
+        "service-endpoint": "",
+        "assistant_id": "",
+        "debug": false,
+        "restart": false,
+        "return_context": true,
+        "alternate_intents": false,
+        "multisession": true,
+        "timeout": "",
+        "optout-learning": false,
+        "persist-session-id": false,
+        "x": 540,
+        "y": 240,
+        "wires": [
+            [
+                "d588612f25086830",
+                "480976e73141c5e4"
+            ]
+        ]
+    },
+    {
+        "id": "d588612f25086830",
+        "type": "function",
+        "z": "49cd3ad4fb25a54b",
+        "name": "Parse JSON do watsonx Assistant",
+        "func": "if (msg.payload) {\n    let output = msg.payload.output.generic;\n    msg.payload = { messages: [] };\n    for (var i = 0; i < output.length; i++) {\n        if (output[i].response_type === \"text\") {\n            msg.payload.messages.push({ text: output[i].text });    \n        } else if (output[i].response_type === \"image\") {\n            msg.payload.messages.push({ attachment: { type: \"image\", payload: { url: output[i].source }}})\n        } else if (output[i].response_type === \"option\") {\n            var buttons = [];\n            for (var b = 0; b < output[i].options.length; b++) {\n                buttons.push({ type: \"show_block\", block_names: [\"Options\"], title: output[i].options[b].label });\n            }\n            msg.payload.messages.push({ attachment: { type: \"template\", payload: { template_type: \"button\", text: output[i].title, buttons: buttons }}});\n        } else {\n            msg.payload.messages.push({ text: \"Erro no retorno da API\" })\n        }\n    }\n    msg.payload = msg.payload.messages[0].text;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 240,
+        "wires": [
+            [
+                "a7f7a0f6f3094d9b"
+            ]
+        ]
+    },
+    {
+        "id": "480976e73141c5e4",
+        "type": "debug",
+        "z": "49cd3ad4fb25a54b",
+        "name": "Debug Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "82332b99c88959bb",
+        "type": "debug",
+        "z": "49cd3ad4fb25a54b",
+        "name": "Debug Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 240,
+        "wires": []
+    }
+]
