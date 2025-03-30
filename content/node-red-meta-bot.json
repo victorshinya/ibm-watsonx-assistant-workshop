@@ -1,0 +1,153 @@
+[
+    {
+        "id": "7e7dc5a9.7ea4bc",
+        "type": "comment",
+        "z": "eeb590f3360fd9df",
+        "name": "watsonx Assistant + Chatfuel",
+        "info": "",
+        "x": 140,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "322d41fc.727b1e",
+        "type": "http in",
+        "z": "eeb590f3360fd9df",
+        "name": "GET /chatfuel",
+        "url": "/chatfuel",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 90,
+        "y": 80,
+        "wires": [
+            [
+                "220c92dd.9654be"
+            ]
+        ]
+    },
+    {
+        "id": "220c92dd.9654be",
+        "type": "change",
+        "z": "eeb590f3360fd9df",
+        "name": "Mensagem no Payload",
+        "rules": [
+            {
+                "t": "set",
+                "p": "params.session_id",
+                "pt": "msg",
+                "to": "req.query.user",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "req.query.text",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 310,
+        "y": 80,
+        "wires": [
+            [
+                "494fbc74.1c1794",
+                "ee5fe3f5ebf3e322"
+            ]
+        ]
+    },
+    {
+        "id": "c2e1ebc1.093308",
+        "type": "http response",
+        "z": "eeb590f3360fd9df",
+        "name": "Retorno HTTP",
+        "statusCode": "",
+        "headers": {},
+        "x": 1020,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "368b5fea.8ce2b",
+        "type": "function",
+        "z": "eeb590f3360fd9df",
+        "name": "Parse JSON do watsonx Assistant",
+        "func": "if (msg.payload) {\n    let output = msg.payload.output.generic;\n    msg.payload = { messages: [] };\n    for (var i = 0; i < output.length; i++) {\n        if (output[i].response_type === \"text\") {\n            msg.payload.messages.push({ text: output[i].text });    \n        } else if (output[i].response_type === \"image\") {\n            msg.payload.messages.push({ attachment: { type: \"image\", payload: { url: output[i].source }}})\n        } else if (output[i].response_type === \"option\") {\n            var buttons = [];\n            for (var b = 0; b < output[i].options.length; b++) {\n                buttons.push({ type: \"show_block\", block_names: [\"Options\"], title: output[i].options[b].label });\n            }\n            msg.payload.messages.push({ attachment: { type: \"template\", payload: { template_type: \"button\", text: output[i].title, buttons: buttons }}});\n        } else {\n            msg.payload.messages.push({ text: \"Erro no retorno da API\" })\n        }\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 80,
+        "wires": [
+            [
+                "c2e1ebc1.093308",
+                "aaed4d1fecf1cdda"
+            ]
+        ]
+    },
+    {
+        "id": "494fbc74.1c1794",
+        "type": "watson-assistant-v2",
+        "z": "eeb590f3360fd9df",
+        "name": "watsonx",
+        "service-endpoint": "",
+        "assistant_id": "",
+        "debug": false,
+        "restart": false,
+        "return_context": true,
+        "alternate_intents": false,
+        "multisession": true,
+        "timeout": "",
+        "optout-learning": false,
+        "persist-session-id": false,
+        "x": 520,
+        "y": 80,
+        "wires": [
+            [
+                "368b5fea.8ce2b"
+            ]
+        ]
+    },
+    {
+        "id": "ee5fe3f5ebf3e322",
+        "type": "debug",
+        "z": "eeb590f3360fd9df",
+        "name": "Debug input payload",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 560,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "aaed4d1fecf1cdda",
+        "type": "debug",
+        "z": "eeb590f3360fd9df",
+        "name": "Debug response",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 140,
+        "wires": []
+    }
+]
